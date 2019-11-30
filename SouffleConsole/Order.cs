@@ -25,7 +25,7 @@ namespace SouffleConsole
         public static int NumberOfOrders { get { return numberOfOrders; } }
 
         static ArrayList orderArray;
-        public static ArrayList OrderArray { get { return orderArray; } }        
+        public static ArrayList OrderArray { get { return orderArray; } set { orderArray.Add(value); } }        
 
         public Order(ArrayList inputOrder)
         {
@@ -33,18 +33,31 @@ namespace SouffleConsole
             billTotal = OrderTotal(orderItems);            
             this.orderId = ++numberOfOrders;
             numberOfOrders++;
-            orderArray.Add(this);
+            OrderArray.Add(inputOrder);
+            OrderOverView(this.orderItems, this.orderId);
         }
 
-        double OrderTotal(ArrayList inputArrayList) 
+        public static double OrderTotal(ArrayList inputArrayList) 
         {
             // need to assign total before for loop, because the loop may never run
             double total = 0;
-            for (int i = 0; i < orderItems.Count; i++) {
+            for (int i = 0; i < inputArrayList.Count; i++) {
                 //Cast inputArrayList to object Drink to access properties
                 total += ((Drink)inputArrayList[i]).DrinkPrice;                
             }
             return total;
+        }
+
+        public static void OrderOverView(ArrayList inputArrayList, int orderId) {
+            double orderTotal = OrderTotal(inputArrayList);
+            int itemIndex = 1;
+            WriteLine($"{inputArrayList.Count} items ordered ({orderId}): ");
+            foreach (Drink drinkItem in inputArrayList)
+            {
+                WriteLine($"{itemIndex} for {drinkItem.DrinkName} (${drinkItem.DrinkPrice})"); // Increments by 1 for readability in UI
+                itemIndex++;
+            }
+            WriteLine("Total: {0}", orderTotal);
         }
 
 

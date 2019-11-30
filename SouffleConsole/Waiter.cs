@@ -14,53 +14,82 @@ namespace SouffleConsole
     static class Waiter
     {
         static ArrayList orderedItemArrayList = new ArrayList();
+
         static ArrayList drinkItemArray = Menu.Create();
 
-        public static void mainWaiter() {
+        public static void mainWaiter()
+        {
+            while (true)
+            {
+                ShowMenu();
 
-            ShowMenu();
+                if (orderedItemArrayList.Count > 0) { ShowCurrentOrder(orderedItemArrayList); }
 
-            if (orderedItemArrayList.Count > 0) {ShowCurrentOrder();}
+                GetOrder();
 
-            GetOrder();
-
+                Console.Clear();
+            }
         }
 
         public static void GetOrder()
         {
             string choice = Console.ReadLine();
-
+            //Will catch if choice cannot be converted to int
             try
             {
-                int choiceInt = Convert.ToInt32(choice) - 1; // Decrements by 1 to correct for + 1 in UI
-                orderedItemArrayList.Add(drinkItemArray[choiceInt]);
+                AddItem(Convert.ToInt32(choice) - 1); // Decrements by 1 to correct for + 1 in UI
             }
-            catch { 
-                
+            catch
+            {
+                switch (choice)
+                {
+                    case "Ready":
+                    case "READY":
+                    case "ready":
+                        SubmitOrder(orderedItemArrayList);//will trigger OrderOverView to be displayed on the screen
+                        break;
+                    case "Clear":
+                    case "CLEAR":
+                    case "clear": orderedItemArrayList.Clear(); break;
+                    default:
+                        if (choice.StartsWith("r") || choice.StartsWith("R")) { RemoveItem(choice); }
+                        break;
+                }
             }
-
-            if (Regex.IsMatch(choice, @"^\d+$") {  }
-            elseif 
-
-            switch (choice) { 
-                case  { }
-            }
-            case 
         }
 
-        public static void ShowCurrentOrder()
+        public static void ShowCurrentOrder(ArrayList inputArrayList) // Similar to Order.OrderOverView, but doesn't require orderId
         {
-            
+            double orderTotal = Order.OrderTotal(inputArrayList);
+            int itemIndex = 1;
+            WriteLine($"{inputArrayList.Count} items ordered: ");
+            WriteLine("");
+            foreach (Drink drinkItem in inputArrayList)
+            {
+                WriteLine($"{itemIndex} for {drinkItem.DrinkName} (${drinkItem.DrinkPrice})"); // Increments by 1 for readability in UI
+                itemIndex++;
+            }
+            WriteLine("Total: ${0}", orderTotal);
+
         }
 
-        public static void AddItem()
+        public static void AddItem(int choiceInt)
         {
-
+            orderedItemArrayList.Add(drinkItemArray[choiceInt]);
         }
 
-        public static void RemoveItem()
+        public static void RemoveItem(string itemToRemove)
         {
 
+            int index = Convert.ToInt32(Regex.Match(itemToRemove, @"\d+").Value) - 1;// Decrements by 1 to correct for + 1 in UI
+            if (index < orderedItemArrayList.Count && index >= 0)
+            {
+                string thisDrinkname = ((Drink)orderedItemArrayList[index]).DrinkName;
+                double thisDrinkPrice = ((Drink)orderedItemArrayList[index]).DrinkPrice;
+                WriteLine($"{0} removed, {1} deducted from the total", thisDrinkname, thisDrinkPrice);
+                orderedItemArrayList.RemoveAt(index);
+            }
+            else { WriteLine($"Item {Regex.Match(itemToRemove, @"\d+").Value} does not exist"); ReadKey(); }
         }
 
         public static void ShowMenu()
@@ -69,54 +98,30 @@ namespace SouffleConsole
 
             WriteLine("What would you like to order?");
             WriteLine("Enter 'ready' to finish your order");
-            WriteLine("Optionally type 'r' + the ordered item, like so: r1, to remove ordered item 1 ");
-            WriteLine();
-            WriteLine($"{drinkItemArray.Count} items on the menu");
-            WriteLine();
-
+            WriteLine("Enter 'clear' to clear your order");
+            WriteLine("Enter 'r' + <number of item> to remove and item");
+            WriteLine("");
             foreach (Drink drinkItem in drinkItemArray)
             {
                 WriteLine($"{drinkItemArray.IndexOf(drinkItem) + 1}. for {drinkItem.DrinkName} (${drinkItem.DrinkPrice})"); // Increments by 1 for readability in UI
             }
+            WriteLine();
+            WriteLine($"{drinkItemArray.Count} items on the menu");
+            WriteLine();
         }
-
-        public static void ConfirmOrder(int orderId) 
-        {
-        Order order = FetchOrder(orderId);
-            
-        WriteLine($"This is your order number {orderId}: ");
-        foreach (Drink item in order.OrderItems)
-        {
-            WriteLine($", {item.DrinkName}, ${item.DrinkPrice}");
-        }
-            WriteLine($"Total: {order.BillTotal}");
-        }
-        /* The preliminary total should be calculated through a method, not in the spaghetti
-         * 
-         * Below is a copy of the OrderTotal method of Order()
-        double PreliminaryTotal(ArrayList inputArrayList)
-        {
-            // need to assign total before for loop, because the loop may never run
-            double total = 0;
-            for (int i = 0; i < .Count; i++)
-            {
-                //Cast inputArrayList to object Drink to access properties
-                total += ((Drink)inputArrayList[i]).DrinkPrice;
-            }
-            return total;
-        }
-        */
-        public static int SubmitOrder(ArrayList inputArrayList) 
+                
+        public static int SubmitOrder(ArrayList inputArrayList)
         {
             int orderId = Order.NumberOfOrders; //or add ++???
             new Order(inputArrayList);
             return orderId;
         }
-
-        public static Order FetchOrder(int orderId) {
+        /* Not currently used
+        public static Order FetchOrder(int orderId)
+        {
             Order result = (Order)Order.OrderArray[orderId];
             return result;
-            
         }
+        */
     }
 }

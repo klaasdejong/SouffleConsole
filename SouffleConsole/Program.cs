@@ -13,12 +13,10 @@ namespace SouffleConsole
     {
         static void Main(string[] args)
         {                       
-            Waiter.GetOrder();
+            Waiter.mainWaiter();
             WriteLine("This is the end");
             ReadKey();
         }
-
-         
     }
 
 }
