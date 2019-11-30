@@ -46,7 +46,14 @@ namespace SouffleConsole
                     case "Ready":
                     case "READY":
                     case "ready":
-                        SubmitOrder(orderedItemArrayList);//will trigger OrderOverView to be displayed on the screen
+                        if (orderedItemArrayList.Count > 0)
+                        {
+                            SubmitOrder(orderedItemArrayList);//will trigger OrderOverView to be displayed on the screen
+                        }
+                        else {
+                            WriteLine("Add some items first");
+                            ReadKey();
+                        }
                         break;
                     case "Clear":
                     case "CLEAR":
@@ -80,16 +87,22 @@ namespace SouffleConsole
 
         public static void RemoveItem(string itemToRemove)
         {
-
-            int index = Convert.ToInt32(Regex.Match(itemToRemove, @"\d+").Value) - 1;// Decrements by 1 to correct for + 1 in UI
-            if (index < orderedItemArrayList.Count && index >= 0)
+            try
             {
-                string thisDrinkname = ((Drink)orderedItemArrayList[index]).DrinkName;
-                double thisDrinkPrice = ((Drink)orderedItemArrayList[index]).DrinkPrice;
-                WriteLine($"{0} removed, {1} deducted from the total", thisDrinkname, thisDrinkPrice);
-                orderedItemArrayList.RemoveAt(index);
+                int index = Convert.ToInt32(Regex.Match(itemToRemove, @"\d+").Value) - 1;// Decrements by 1 to correct for + 1 in UI
+                if (index < orderedItemArrayList.Count && index >= 0)
+                {
+                    string thisDrinkname = ((Drink)orderedItemArrayList[index]).DrinkName;
+                    double thisDrinkPrice = ((Drink)orderedItemArrayList[index]).DrinkPrice;
+                    WriteLine($"{0} removed, {1} deducted from the total", thisDrinkname, thisDrinkPrice);
+                    orderedItemArrayList.RemoveAt(index);
+                }
+                else { WriteLine($"Item {Regex.Match(itemToRemove, @"\d+").Value} does not exist"); ReadKey(); }
             }
-            else { WriteLine($"Item {Regex.Match(itemToRemove, @"\d+").Value} does not exist"); ReadKey(); }
+            catch {
+                WriteLine($"{itemToRemove} is an invalid input");
+                ReadKey();
+            }
         }
 
         public static void ShowMenu()

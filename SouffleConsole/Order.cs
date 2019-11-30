@@ -33,8 +33,8 @@ namespace SouffleConsole
             billTotal = OrderTotal(orderItems);            
             this.orderId = ++numberOfOrders;
             numberOfOrders++;
-            OrderArray.Add(inputOrder);
-            OrderOverView(this.orderItems, this.orderId);
+            orderArray.Add(this);
+            OrderOverView(orderItems, orderId);
         }
 
         public static double OrderTotal(ArrayList inputArrayList) 

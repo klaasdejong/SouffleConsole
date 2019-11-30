@@ -49,7 +49,6 @@
     <Compile Include="Drink.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Temp.cs" />
     <Compile Include="Waiter.cs" />
   </ItemGroup>
   <ItemGroup>
