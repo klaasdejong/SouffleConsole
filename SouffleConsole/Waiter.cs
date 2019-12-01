@@ -13,28 +13,35 @@ namespace SouffleConsole
 {
     static class Waiter
     {
-        static ArrayList orderedItemArrayList = new ArrayList();
+        static Cart cart = new Cart();
 
         static ArrayList drinkItemArray = Menu.Create();
 
-        public static void mainWaiter()
+        public static void MainWaiter()
         {
             while (true)
             {
                 ShowMenu();
 
-                if (orderedItemArrayList.Count > 0) { ShowCurrentOrder(orderedItemArrayList); }
+                if (cart.cartItems.Count > 0) { ShowCurrentOrder(); }
 
-                GetOrder();
+                string choice = GetInput();
+
+                ProcessInput(choice);
 
                 Console.Clear();
             }
         }
 
-        public static void GetOrder()
+        public static string GetInput()
         {
             string choice = Console.ReadLine();
+            return choice;
             //Will catch if choice cannot be converted to int
+           
+        }
+
+        public static void ProcessInput(string choice) {
             try
             {
                 AddItem(Convert.ToInt32(choice) - 1); // Decrements by 1 to correct for + 1 in UI
@@ -46,18 +53,22 @@ namespace SouffleConsole
                     case "Ready":
                     case "READY":
                     case "ready":
-                        if (orderedItemArrayList.Count > 0)
+                        if (cart.cartItems.Count > 0)
                         {
-                            SubmitOrder(orderedItemArrayList);//will trigger OrderOverView to be displayed on the screen
+                            int orderId = SubmitOrder(cart.cartItems);//will trigger OrderOverView to be displayed on the screen
+                            WriteLine($"Your order Id is: {orderId}");
+                            WriteLine("Press any key  to go back");
+                            ReadKey();
                         }
-                        else {
+                        else
+                        {
                             WriteLine("Add some items first");
                             ReadKey();
                         }
                         break;
                     case "Clear":
                     case "CLEAR":
-                    case "clear": orderedItemArrayList.Clear(); break;
+                    case "clear": cart.cartItems.Clear(); break;
                     default:
                         if (choice.StartsWith("r") || choice.StartsWith("R")) { RemoveItem(choice); }
                         break;
@@ -65,13 +76,13 @@ namespace SouffleConsole
             }
         }
 
-        public static void ShowCurrentOrder(ArrayList inputArrayList) // Similar to Order.OrderOverView, but doesn't require orderId
+        public static void ShowCurrentOrder() // Similar to Order.OrderOverView, but doesn't require orderId
         {
-            double orderTotal = Order.OrderTotal(inputArrayList);
+            double orderTotal = Order.OrderTotal(cart.cartItems);
             int itemIndex = 1;
-            WriteLine($"{inputArrayList.Count} items ordered: ");
+            WriteLine($"{cart.cartItems.Count} items ordered: ");
             WriteLine("");
-            foreach (Drink drinkItem in inputArrayList)
+            foreach (Drink drinkItem in cart.cartItems)
             {
                 WriteLine($"{itemIndex} for {drinkItem.DrinkName} (${drinkItem.DrinkPrice})"); // Increments by 1 for readability in UI
                 itemIndex++;
@@ -82,7 +93,7 @@ namespace SouffleConsole
 
         public static void AddItem(int choiceInt)
         {
-            orderedItemArrayList.Add(drinkItemArray[choiceInt]);
+            cart.cartItems.Add(drinkItemArray[choiceInt]);
         }
 
         public static void RemoveItem(string itemToRemove)
@@ -90,12 +101,12 @@ namespace SouffleConsole
             try
             {
                 int index = Convert.ToInt32(Regex.Match(itemToRemove, @"\d+").Value) - 1;// Decrements by 1 to correct for + 1 in UI
-                if (index < orderedItemArrayList.Count && index >= 0)
+                if (index < cart.cartItems.Count && index >= 0)
                 {
-                    string thisDrinkname = ((Drink)orderedItemArrayList[index]).DrinkName;
-                    double thisDrinkPrice = ((Drink)orderedItemArrayList[index]).DrinkPrice;
+                    string thisDrinkname = ((Drink)cart.cartItems[index]).DrinkName;
+                    double thisDrinkPrice = ((Drink)cart.cartItems[index]).DrinkPrice;
                     WriteLine($"{0} removed, {1} deducted from the total", thisDrinkname, thisDrinkPrice);
-                    orderedItemArrayList.RemoveAt(index);
+                    cart.cartItems.RemoveAt(index);
                 }
                 else { WriteLine($"Item {Regex.Match(itemToRemove, @"\d+").Value} does not exist"); ReadKey(); }
             }
@@ -123,12 +134,13 @@ namespace SouffleConsole
             WriteLine();
         }
                 
-        public static int SubmitOrder(ArrayList inputArrayList)
+        public static int SubmitOrder(ArrayList cartItems)
         {
             int orderId = Order.NumberOfOrders; //or add ++???
-            new Order(inputArrayList);
+            _ = new Order(cartItems);
             return orderId;
         }
+
         /* Not currently used
         public static Order FetchOrder(int orderId)
         {

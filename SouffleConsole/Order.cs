@@ -24,17 +24,15 @@ namespace SouffleConsole
         static int numberOfOrders = 0;
         public static int NumberOfOrders { get { return numberOfOrders; } }
 
-        static ArrayList orderArray;
-        public static ArrayList OrderArray { get { return orderArray; } set { orderArray.Add(value); } }        
+        public static ArrayList orderArray;
+        public static ArrayList OrderArray { get { return orderArray; } }        
 
-        public Order(ArrayList inputOrder)
+        public Order(ArrayList orderItems)
         {
-            this.orderItems = inputOrder;
-            billTotal = OrderTotal(orderItems);            
-            this.orderId = ++numberOfOrders;
-            numberOfOrders++;
-            orderArray.Add(this);
-            OrderOverView(orderItems, orderId);
+            this.orderItems = orderItems;
+            billTotal = OrderTotal(this.orderItems);            
+            orderId = ++numberOfOrders;
+            numberOfOrders++;            
         }
 
         public static double OrderTotal(ArrayList inputArrayList) 
@@ -57,11 +55,8 @@ namespace SouffleConsole
                 WriteLine($"{itemIndex} for {drinkItem.DrinkName} (${drinkItem.DrinkPrice})"); // Increments by 1 for readability in UI
                 itemIndex++;
             }
-            WriteLine("Total: {0}", orderTotal);
+            WriteLine("Total: ${0}", orderTotal);
         }
-
-
-
     }
 }
 

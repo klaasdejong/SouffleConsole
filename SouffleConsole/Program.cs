@@ -13,7 +13,7 @@ namespace SouffleConsole
     {
         static void Main(string[] args)
         {                       
-            Waiter.mainWaiter();
+            Waiter.MainWaiter();
             WriteLine("This is the end");
             ReadKey();
         }
