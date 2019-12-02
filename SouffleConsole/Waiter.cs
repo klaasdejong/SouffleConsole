@@ -56,7 +56,7 @@ namespace SouffleConsole
                         if (cart.cartItems.Count > 0)
                         {
                             int orderId = SubmitOrder(cart.cartItems);//will trigger OrderOverView to be displayed on the screen
-                            WriteLine($"Your order Id is: {orderId}");
+                            WriteLine($"Your order Id is: {orderId + 1}");
                             WriteLine("Press any key  to go back");
                             ReadKey();
                         }
@@ -68,9 +68,15 @@ namespace SouffleConsole
                         break;
                     case "Clear":
                     case "CLEAR":
-                    case "clear": cart.cartItems.Clear(); break;
+                    case "clear": cart.cartItems.Clear(); break;                    
                     default:
-                        if (choice.StartsWith("r") || choice.StartsWith("R")) { RemoveItem(choice); }
+                        if (choice.StartsWith("r") || choice.StartsWith("R"))
+                        {
+                            RemoveItem(choice);
+                        }
+                        else if (choice.StartsWith("o") || choice.StartsWith("O")) {
+                            RequestPrevious(choice);
+                        }
                         break;
                 }
             }
@@ -124,6 +130,7 @@ namespace SouffleConsole
             WriteLine("Enter 'ready' to finish your order");
             WriteLine("Enter 'clear' to clear your order");
             WriteLine("Enter 'r' + <number of item> to remove and item");
+            WriteLine("Enter 'o' + <number of previous order> to retrieve previous order");
             WriteLine("");
             foreach (Drink drinkItem in drinkItemArray)
             {
@@ -138,15 +145,38 @@ namespace SouffleConsole
         {
             int orderId = Order.NumberOfOrders; //or add ++???
             _ = new Order(cartItems);
-            return orderId;
+            cart.cartItems.Clear();
+            return orderId;            
         }
-
-        /* Not currently used
-        public static Order FetchOrder(int orderId)
+        
+        public static void RequestPrevious(string orderId)
         {
-            Order result = (Order)Order.OrderArray[orderId];
-            return result;
-        }
-        */
+            try
+            {
+                int orderIdInt = Convert.ToInt32(Regex.Match(orderId, @"\d+").Value) - 1;
+                Order result = Order.GetPrevious(orderIdInt);
+                ArrayList orderItems = result.OrderItems;
+
+                WriteLine($"This is your order number {orderId}");
+                /* slow way to do this
+                int itemIndex = 1;
+                foreach (Drink drinkItem in result.OrderItems)             
+                {
+                    WriteLine($"{itemIndex} for {drinkItem.DrinkName} (${drinkItem.DrinkPrice})"); // Increments by 1 for readability in UI
+                    itemIndex++;
+                }
+                Fast way to do this: */
+
+                for (int i = 0; i < result.OrderItems.Count; i++)
+                {
+                    WriteLine($"{i + 1} for {((Drink)orderItems[i]).DrinkName} (${((Drink)orderItems[i]).DrinkPrice})"); // Increments by 1 for readability in UI                
+                }
+                ReadKey();
+            }
+            catch {
+                WriteLine("Invalid input");
+                ReadKey();
+            }
+        }        
     }
 }
