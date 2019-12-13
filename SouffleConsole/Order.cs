@@ -11,21 +11,42 @@ namespace SouffleConsole
 {
     class Order
     {
-        double billTotal;
-        public double BillTotal { get { return billTotal; } }
+        int id;
+        public int Id { get { return id; } }
 
-        ArrayList orderItems;
-        public ArrayList OrderItems { get { return orderItems; } }
+        decimal total;
+        public decimal Total { get { return total; } }
 
-        readonly int orderId;
-        public int OrderId { get { return orderId; } }
+        Cart sessionCart;
+        public Cart SessionCart { get { return sessionCart; } }
+       
+        public Order(Cart cart) {
+            id = AllOrders.Orders.Count;
+            total = cart.cartTotal();
+            sessionCart = cart;
+            AllOrders.addOrderToList(this);
+        } 
+
+        public override string ToString()
+        {
+            List<string> items = new List<string>();
+
+            foreach (Drink item in sessionCart.Items) { items.Add(item.ToString()); }
+
+            return string.Format("Order {0}, order total: {1}, contains: {2}", id, total, items);
+        }
+
+        //ArrayList orderItems;
+        //public ArrayList OrderItems { get { return orderItems; } }
+
+
 
         //static
-        static int numberOfOrders = 0;
-        public static int NumberOfOrders { get { return numberOfOrders; } }
+        //static int numberOfOrders = 0;
+        //public static int NumberOfOrders { get { return numberOfOrders; } }
 
-        static ArrayList orderArray = new ArrayList();
-
+        //static ArrayList orderArray = new ArrayList();
+        /*
         public Order(ArrayList cartItems)
         {
             orderItems = cartItems;
@@ -67,16 +88,15 @@ namespace SouffleConsole
             return previousOrder;
         }
 
-        
-        /*
-        public static void AddToOrderArray(Order order) {
-            if (orderArray == null) 
-            {
-                ArrayList tempArray = new ArrayList();
-                tempArray.Add(order);
-                orderArray = tempArray;
-            }
-        }*/
+        public override string ToString()
+        {
+            List<string> items = new List<string>();
+
+            foreach (Drink item in orderItems) { items.Add(item.ToString()); }
+
+            return string.Format("Order {0}, order total: {1}, contains: {2}", orderId, billTotal, items);
+        }
+        */
     }
 }
 
