@@ -29,32 +29,7 @@ namespace SouffleConsole
              * Food geen toegang heeft tot private attributen van Product. Voor this.straw is dit niet nodig
              * omdat we in de context van Drink zitten.
              */
-            return string.Format("ID: {0}, Name: {1}, Price: {2}, Straw: {3}", this.Id, this.Name, this.Price, this.straw);
+            return string.Format("{0} - {1}, Price: {2}, Straw: {3}", this.Id, this.Name, Currency.CentsToWhole(this.Price), this.straw);
         }
-        /*
-        string drinkName;
-        public string DrinkName { get { return drinkName; } }
-
-        double drinkPrice;
-        public double DrinkPrice { get { return drinkPrice; } }
-
-        static int numberOfDrinks = 0;
-        public static int NumberOfDrinks { get { return numberOfDrinks; } }
-
-        int drinkId;
-        public int DrinkId { get { return drinkId; } }
-
-        public Drink(string aDrinkName, double aDrinkPrice)
-        {
-            drinkName = aDrinkName;
-            drinkPrice = aDrinkPrice;
-            drinkId = ++numberOfDrinks;
-            numberOfDrinks++;
-        }
-
-        public override string ToString() {
-            return string.Format("No.{0} {1}, price: ${2}", drinkId, drinkName, drinkPrice);
-        }
-        */
     }
 }

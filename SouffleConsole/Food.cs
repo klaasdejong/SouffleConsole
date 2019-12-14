@@ -29,8 +29,7 @@ namespace SouffleConsole
              * Food geen toegang heeft tot private attributen van Product. Voor this.extraSpoon is dit niet nodig
              * omdat we in de context van Food zitten.
              */
-            return string.Format("ID: {0}, Name: {1}, Price: {2}, Extra spoon: {3}", this.Id, this.Name, this.Price, this.extraSpoon);
+            return string.Format(@"{0} - {1}, Price: {2}, Extra spoon: {3}", this.Id, this.Name, Currency.CentsToWhole(this.Price), this.extraSpoon);
         }
-
     }
 }

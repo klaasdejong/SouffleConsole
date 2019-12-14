@@ -34,7 +34,8 @@ namespace SouffleConsole
          * Er is geen noodzaak om bij deze constructor te komen behalve als het via de constructor van de overervende
          * klassen Drink en Food gaat.
          */
-        protected Product(string aName, decimal aPrice) {
+        protected Product(string aName, decimal aPrice)
+        {
             this.name = aName;
             this.price = aPrice;
             this.id = numberOfProducts;

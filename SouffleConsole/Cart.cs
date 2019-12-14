@@ -11,7 +11,7 @@ namespace SouffleConsole
 {
     class Cart
     {
-        Menu cartMenu;
+        public Menu cartMenu;
 
         int id;
         public int Id { get { return id; } }
@@ -29,12 +29,22 @@ namespace SouffleConsole
             items.Add(cartMenu.getProductFromMenu(choiceInt));
         }
 
-        public void RemoveItem(int choiceInt)
+        public void RemoveItem(string choice)
         {
-            items.RemoveAt(choiceInt);
+            int resultInt = System.Convert.ToInt32(Regex.Match(choice, @"\d+").Value);
+            
+            try {
+                Product toRemove = cartMenu.Items[resultInt];
+                items.Remove(toRemove);
+            }
+            catch
+            {
+                WriteLine("Not a valid input, press a key to go back");
+                ReadKey();
+            }
         }
 
-        public decimal cartTotal()
+        public decimal CartTotal()
         {
             // need to assign total before for loop, because the loop may never run
             decimal total = 0;
@@ -57,7 +67,7 @@ namespace SouffleConsole
             return order.Id;
         }
         
-
+        /*
         public override string ToString()
         {
             return string.Format("{0}", items);
@@ -65,70 +75,53 @@ namespace SouffleConsole
             //foreach (Drink item in items) { toStringItems.Add(item.ToString()); }
             //return string.Format("Cart: Id {0}, order total: {1}, contains: {2}", id, cartTotal(), toStringItems);
         }
+        */
 
-        /*
-        public ArrayList items = new ArrayList();
-
-        public double OrderTotal()
-        {
-            // need to assign total before for loop, because the loop may never run
-            double total = 0;
-            for (int i = 0; i < items.Count; i++)
-            {
-                //Cast inputArrayList to object Drink to access properties
-                total += ((Drink)items[i]).DrinkPrice;
-            }
-            return total;
-        }
-
+        // Overschrijft de ToString() methode van het object.
         public override string ToString()
         {
-            List<string> items = new List<string>();
+            String str = "Your cart:";
 
-            foreach (string item in items) { items.Add(item.ToString()); }
+            // Kan item.IndexOf niet gebruiken 
 
-            return string.Format("Cart total: {0}, cart contains: {1}", OrderTotal(), items);
-        }
+            var timesOrdered =
+                    from x in items
+                    group x by x into g
+                    let countOc = g.Count()
+                    orderby countOc descending
+                    select new { Value = g.Key, Count = countOc };
 
-        public void AddItem(int choiceInt)
-        {
-            items.Add(Menu.returnDrinkFromMenu(choiceInt));
-        }
+            foreach (var x in timesOrdered) {
+                str += $"\n{x.Count}x  an order of {x.Value}";
+            }
+            str += $"\n--------------\nTotal: {Currency.CentsToWhole(CartTotal())}\n--------------\nEnter 'r' + menu index to remove an item";
 
-        public void RemoveItem(string itemToRemove)
-        {
-            try
-            {
-                int index = Convert.ToInt32(Regex.Match(itemToRemove, @"\d+").Value) - 1;// Decrements by 1 to correct for + 1 in UI
-                if (index < items.Count && index >= 0)
-                {
-                    string thisDrinkname = ((Drink)items[index]).DrinkName;
-                    double thisDrinkPrice = ((Drink)items[index]).DrinkPrice;
-                    WriteLine($"{0} removed, {1} deducted from the total", thisDrinkname, thisDrinkPrice);
-                    items.RemoveAt(index);
+
+            /* Loopt door ieder item op het menu en voert ToString() uit en voegt return en een nieuwe regel
+            /* to aan string str
+             */
+
+            /*
+            foreach (Product item in items.Distinct())
+            {   
+
+                var timesOrdered =
+                    from x in items
+                    group x by x into g
+                    let countOc = g.Count()
+                    orderby countOc descending
+                    select new { Value = g.Key, Count = countOc };
+
+                foreach (var x in timesOrdered) { 
+                    WriteLine
                 }
-                else { WriteLine($"Item {Regex.Match(itemToRemove, @"\d+").Value} does not exist"); ReadKey(); }
-            }
-            catch
-            {
-                WriteLine($"{itemToRemove} is an invalid input");
-                ReadKey();
-            }
+                //if (str == null) { str = item.ToString(); } else { str += "\n" + item.ToString(); }
+                str += "\n" + $"Index {index} || " + item.ToString() + $"times: {Items.Count<Product>}";
+                index++;
+                */        
+            return str;
         }
 
-        public static int SubmitOrder(ArrayList cart)
-        {
-            int orderId = Order.NumberOfOrders; //or add ++???
-            _ = new Order(cart);
-            cart.Clear();
-            return orderId;
-        }
-
-        public void ShowCurrentOrder() // Similar to Order.OrderOverView, but doesn't require orderId
-        {
-            this.ToString();
-        }
-        */
+        
     }
-
 }

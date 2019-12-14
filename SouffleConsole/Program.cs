@@ -15,19 +15,21 @@ namespace SouffleConsole
     {
         public static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
             Cart cart = new Cart();
 
             while (true)
             {
                 ShowMenu();
 
-                if (cart.Items.Count > 0) { cart.ToString(); }
-
+                cart.ToString();
+                
                 string choice = GetInput();
 
                 ProcessInput(choice);
 
-                Console.Clear();
+                Clear();
             }
 
             void ShowMenu()
@@ -38,17 +40,20 @@ namespace SouffleConsole
                  * of meerdere keren WriteLine te gebruiken.
                  * Daaronder roep ik de ToString() methode voor cartMenu aan in de Menu klasse.
                  */
-                Menu cartMenu = new Menu();
+                //Menu cartMenu = new Menu();
                 WriteLine(@"What would you like to order?
 
-                Enter 'ready' to finish your order
-                Enter 'clear' to clear your order
-                Enter 'r' + <number of item> to remove and item
-                Enter 'o' + <number of previous order> to retrieve previous order
+Enter 'ready' to finish your order
+Enter 'clear' to clear your order
+Enter 'o' + <number of previous order> to retrieve previous order
                 ");
-                WriteLine(cartMenu.ToString());
+                WriteLine(cart.cartMenu.ToString());
                 WriteLine();
-                WriteLine($"{cartMenu.Items.Count} items on the menu");
+                if (cart.Items.Count > 0) {
+                    WriteLine($"{cart.Items.Count} ordered");
+                    WriteLine();
+                    WriteLine(cart.ToString());
+                }
             }
 
             string GetInput()
@@ -62,7 +67,11 @@ namespace SouffleConsole
             {
                 try
                 {
-                    cart.AddItem(Convert.ToInt32(choice));
+                    if (System.Convert.ToInt32(choice)  < 0 || System.Convert.ToInt32(choice) > (cart.cartMenu.Items.Count - 1)) {
+                        WriteLine("Choose a number between 0 and {0} ", cart.cartMenu.Items.Count - 1);
+                        WriteLine("Hit enter to refresh the screen.");
+                        ReadKey();
+                    } else { cart.AddItem(System.Convert.ToInt32(choice)); }
                 }
                 catch
                 {
@@ -74,6 +83,7 @@ namespace SouffleConsole
                             if (cart.Items.Count > 0)
                             {
                                 Cart.SubmitOrder(cart);//will trigger OrderOverView to be displayed on the screen
+                                cart.ClearAll();
                                 WriteLine("Press any key  to go back");
                                 ReadKey();
                             }
@@ -89,7 +99,7 @@ namespace SouffleConsole
                         default:
                             if (choice.StartsWith("r") || choice.StartsWith("R"))
                             {
-                                cart.RemoveItem(Convert.ToInt32(choice));
+                                cart.RemoveItem(choice);
                             }
                             else if (choice.StartsWith("o") || choice.StartsWith("O"))
                             {
@@ -98,38 +108,7 @@ namespace SouffleConsole
                             break;
                     }
                 }
-                /*
-                void RequestPrevious(string orderId)
-                {
-                    try
-                    {
-                        int orderIdInt = Convert.ToInt32(Regex.Match(orderId, @"\d+").Value) - 1;
-                        Order result = Order.GetPrevious(orderIdInt);
-                        ArrayList orderItems = result.OrderItems;
 
-                        WriteLine($"This is your order number {orderIdInt}");
-                        // slow way to do this 
-                        int itemIndex = 1;
-                        foreach (Drink drinkItem in result.OrderItems)
-                        {
-                            WriteLine($"{itemIndex} for {drinkItem.DrinkName} (${drinkItem.DrinkPrice})"); // Increments by 1 for readability in UI
-                            itemIndex++;
-                        }
-                        //Fast way to do this:
-                        /
-                        for (int i = 0; i < result.OrderItems.Count; i++)
-                        {
-                            WriteLine($"{i + 1} for {((Drink)orderItems[i]).DrinkName} (${((Drink)orderItems[i]).DrinkPrice})"); // Increments by 1 for readability in UI                
-                        }
-                        ReadKey();
-                    }
-                    catch
-                    {
-                        WriteLine("Invalid input");
-                        ReadKey();
-                    }
-                }
-                */
               
             }
               

@@ -63,45 +63,5 @@ namespace SouffleConsole
             Product toReturn = items[choice];
             return toReturn;
         }
-
-        /*
-        static List<Drink> menuItems;
-
-        public Menu() { 
-            menuItems = Create();
-        }
-
-        public static List<Drink> Create() {
-            List<Drink> items = new List<Drink>();
-            items.Add(new Drink("Tea", 2.3));
-            items.Add(new Drink("Mint Tea", 1.2));
-            items.Add(new Drink("Coffee", 2.5));
-            items.Add(new Drink("Cappuccino", 2.8));
-            items.Add(new Drink("Espresso", 2.0));
-            items.Add(new Drink("Latte Machiatto", 2.7));
-            items.Add(new Drink("Diet Coke", 1.2));
-            items.Add(new Drink("Pilsner Beer", 2.8));
-            items.Add(new Drink("Belgian White", 3.8));
-            items.Add(new Drink("Belgian Quadruple", 4.5));
-            items.Add(new Drink("White Wine", 4.0));
-            items.Add(new Drink("Red Wine", 4.5));
-            items.Add(new Drink("Irish Coffee", 3.3));
-            return items;
-        }
-
-        public static Drink returnDrinkFromMenu(int choice) {
-            Drink toReturn = menuItems[choice];
-            return toReturn;
-        }
-                
-        public override string ToString()
-        {
-            List<string> items = new List<string>();
-
-            foreach (Drink item in menuItems) { items.Add(item.ToString()); }
-
-            return string.Format("The menu is as follows: {0},", items);
-        }
-        */
     }
 }

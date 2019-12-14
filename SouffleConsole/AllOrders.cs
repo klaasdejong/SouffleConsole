@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using static System.Console;
 
 namespace SouffleConsole
 {
@@ -20,10 +21,21 @@ namespace SouffleConsole
             orders.Add(input);
         }
 
-        public static Order GetOrder(string choice) {
-            int choiceInt = Convert.ToInt32(Regex.Match(choice, @"\d+").Value);
-            Order toReturn = orders[choiceInt];
-            return toReturn;
+        public static void GetOrder(string choice) {
+            
+            try
+            {
+                int orderNo = Convert.ToInt32(Regex.Match(choice, @"\d+").Value);
+                WriteLine("Order number {0}", choice);
+                WriteLine(orders[orderNo].ToString());
+                WriteLine("Press a key to go back");
+                ReadKey();
+            }
+            catch
+            {
+                WriteLine("Not a valid input, press a key to go back");
+                ReadKey();
+            }
         }
     }
 }
