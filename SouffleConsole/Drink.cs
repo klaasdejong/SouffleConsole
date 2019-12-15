@@ -30,6 +30,7 @@ namespace SouffleConsole
              * omdat we in de context van Drink zitten.
              */
             return string.Format("{0} - {1}, Price: {2}, Straw: {3}", this.Id, this.Name, Currency.CentsToWhole(this.Price), this.straw);
+            // Currency.CentsToWhole zet een decimal-waarde om in het €12,34-format.
         }
     }
 }
